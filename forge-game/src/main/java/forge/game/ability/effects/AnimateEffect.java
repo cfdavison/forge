@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.collections.Maps;
-
+import com.google.common.collect.Maps;
 import com.google.common.collect.Lists;
 
 import forge.card.CardType;

@@ -4,10 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.collections.Lists;
-import org.testng.collections.Maps;
-
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import forge.GameCommand;
 import forge.card.CardType;
