@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.testng.collections.Maps;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -779,6 +780,7 @@ public final class StaticAbilityContinuous {
 
             // add SVars
             if (addSVars != null) {
+                Map<String, String> map = Maps.newHashMap();
                 for (final String sVar : addSVars) {
                     String actualSVar = AbilityUtils.getSVar(stAb, sVar);
                     String name = sVar;
@@ -787,8 +789,9 @@ public final class StaticAbilityContinuous {
                         name = actualSVar.split(":")[0];
                         actualSVar = actualSVar.split(":")[1];
                     }
-                    affectedCard.setSVar(name, actualSVar);
+                    map.put(name, actualSVar);
                 }
+                affectedCard.addChangedSVars(map, se.getTimestamp(), stAb.getId());
             }
 
             if (layer == StaticAbilityLayer.ABILITIES) {

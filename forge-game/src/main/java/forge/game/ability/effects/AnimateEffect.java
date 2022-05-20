@@ -2,6 +2,9 @@ package forge.game.ability.effects;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import org.testng.collections.Maps;
 
 import com.google.common.collect.Lists;
 
@@ -138,10 +141,21 @@ public class AnimateEffect extends AnimateEffectBase {
         }
 
         // sVars to add to the animated being
-        final List<String> sVars = Lists.newArrayList();
+        Map<String, String> sVarsMap = Maps.newHashMap();
         if (sa.hasParam("sVars")) {
-            sVars.addAll(Arrays.asList(sa.getParam("sVars").split(",")));
+            for (final String s : sa.getParam("sVars").split(",")) {
+                String actualsVar = AbilityUtils.getSVar(sa, s);
+                String name = s;
+                if (actualsVar.startsWith("SVar:")) {
+                    actualsVar = actualsVar.split("SVar:")[1];
+                    name = actualsVar.split(":")[0];
+                    actualsVar = actualsVar.split(":")[1];
+                }
+                sVarsMap.put(name, actualsVar);
+            }
         }
+
+
 
         List<Card> tgts = getCardsfromTargets(sa);
 
@@ -166,16 +180,7 @@ public class AnimateEffect extends AnimateEffectBase {
             }
 
             // give sVars
-            for (final String s : sVars) {
-                String actualsVar = AbilityUtils.getSVar(sa, s);
-                String name = s;
-                if (actualsVar.startsWith("SVar:")) {
-                    actualsVar = actualsVar.split("SVar:")[1];
-                    name = actualsVar.split(":")[0];
-                    actualsVar = actualsVar.split(":")[1];
-                }
-                c.setSVar(name, actualsVar);
-            }
+            c.addChangedSVars(sVarsMap, timestamp, 0);
 
             // give Remembered
             if (animateRemembered != null) {

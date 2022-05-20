@@ -1,8 +1,11 @@
 package forge.game.ability.effects;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import org.testng.collections.Lists;
+import org.testng.collections.Maps;
 
 import com.google.common.collect.ImmutableList;
 
@@ -64,17 +67,17 @@ public class AnimateAllEffect extends AnimateEffectBase {
             types.add(host.getChosenType2());
         }
 
-        final List<String> keywords = new ArrayList<>();
+        final List<String> keywords = Lists.newArrayList();
         if (sa.hasParam("Keywords")) {
             keywords.addAll(Arrays.asList(sa.getParam("Keywords").split(" & ")));
         }
 
-        final List<String> removeKeywords = new ArrayList<>();
+        final List<String> removeKeywords = Lists.newArrayList();
         if (sa.hasParam("RemoveKeywords")) {
             removeKeywords.addAll(Arrays.asList(sa.getParam("RemoveKeywords").split(" & ")));
         }
 
-        final List<String> hiddenKeywords = new ArrayList<>();
+        final List<String> hiddenKeywords = Lists.newArrayList();
         if (sa.hasParam("HiddenKeywords")) {
             hiddenKeywords.addAll(Arrays.asList(sa.getParam("HiddenKeywords").split(" & ")));
         }
@@ -99,25 +102,30 @@ public class AnimateAllEffect extends AnimateEffectBase {
         }
 
         // abilities to add to the animated being
-        final List<String> abilities = new ArrayList<>();
+        final List<String> abilities = Lists.newArrayList();
         if (sa.hasParam("Abilities")) {
             abilities.addAll(Arrays.asList(sa.getParam("Abilities").split(",")));
         }
         // replacement effects to add to the animated being
-        final List<String> replacements = new ArrayList<>();
+        final List<String> replacements = Lists.newArrayList();
         if (sa.hasParam("Replacements")) {
             replacements.addAll(Arrays.asList(sa.getParam("Replacements").split(",")));
         }
         // triggers to add to the animated being
-        final List<String> triggers = new ArrayList<>();
+        final List<String> triggers = Lists.newArrayList();
         if (sa.hasParam("Triggers")) {
             triggers.addAll(Arrays.asList(sa.getParam("Triggers").split(",")));
         }
 
         // sVars to add to the animated being
-        final List<String> sVars = new ArrayList<>();
+        final List<String> sVars = Lists.newArrayList();
         if (sa.hasParam("sVars")) {
             sVars.addAll(Arrays.asList(sa.getParam("sVars").split(",")));
+        }
+
+        Map<String, String> SvarsMap = Maps.newHashMap();
+        for (final String s : sVars) {
+            SvarsMap.put(s, AbilityUtils.getSVar(sa, s));
         }
 
         final String valid = sa.getParamOrDefault("ValidCards", "");
@@ -139,9 +147,8 @@ public class AnimateAllEffect extends AnimateEffectBase {
                     timestamp);
 
             // give sVars
-            for (final String s : sVars) {
-                c.setSVar(s, AbilityUtils.getSVar(sa, s));
-            }
+            c.addChangedSVars(SvarsMap, timestamp, 0);
+
             game.fireEvent(new GameEventCardStatsChanged(c));
 
             final GameCommand unanimate = new GameCommand() {
